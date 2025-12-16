@@ -16,10 +16,11 @@ export const EXPLANATIONS = {
     ]
   },
   'n3_cash_02': { 
-    explanation: "残高を超える小切手振出は、当座借越契約があれば「当座預金」のマイナス（貸方）として処理します。",
+    explanation: "「一勘定制」では、当座借越になっても「当座預金」勘定のマイナス（貸方）として処理します。",
     steps: [
       { comment: "買掛金を支払ったので「買掛金」を減らします（借方）。", highlight: "買掛金 150,000円 を支払うため", debit: true, debitKey: "買掛金" },
-      { comment: "当座預金口座から支払われますが、残高(5万)を超えても「当座預金」勘定の貸方に記入し、残高をマイナスにします（一勘定制）。", highlight: "当座借越契約を結んでいる...小切手を振り出した", credit: true, creditKey: "当座預金" }
+      { comment: "当座預金口座から支払われますが、残高(5万)を超えても「一勘定制」なので、そのまま「当座預金」勘定を減らします。", highlight: "当座預金について「一勘定制」を採用している", credit: true, creditKey: "当座預金" },
+      { comment: "もし「二勘定制」なら、残高を超える分(10万)を「当座借越」とします。", highlight: "", debit: false, credit: false }
     ]
   },
 

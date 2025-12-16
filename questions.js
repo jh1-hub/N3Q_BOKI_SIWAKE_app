@@ -25,12 +25,12 @@ export const RAW_QUESTIONS = [
   },
   {
     id: 'n3_cash_02', major: 'intro_cash', sub: 'cash_deposits',
-    text: "当座預金の口座残高は 50,000円 であるが、取引銀行と限度額 1,000,000円 の当座借越契約を結んでいるため、仕入先への買掛金 150,000円 を支払うために小切手を振り出した。",
+    text: "当座預金の口座残高は 50,000円 であるが、取引銀行と限度額 1,000,000円 の当座借越契約を結んでいるため、仕入先への買掛金 150,000円 を支払うために小切手を振り出した。なお、当店では当座預金について「一勘定制」を採用している。",
     correctEntries: { debit: [{ accountName: "買掛金", amount: 150000 }], credit: [{ accountName: "当座預金", amount: 150000 }] },
     choices: ["買掛金", "当座預金", "当座借越", "借入金"],
     mutate: (q) => {
       const amt = Randomizer.getAmount(150000, 0.2, 1000);
-      q.text = `当座預金の口座残高は 50,000円 であるが、取引銀行と限度額 1,000,000円 の当座借越契約を結んでいるため、仕入先への買掛金 ${Randomizer.fmt(amt)}円 を支払うために小切手を振り出した。`;
+      q.text = `当座預金の口座残高は 50,000円 であるが、取引銀行と限度額 1,000,000円 の当座借越契約を結んでいるため、仕入先への買掛金 ${Randomizer.fmt(amt)}円 を支払うために小切手を振り出した。なお、当店では当座預金について「一勘定制」を採用している。`;
       q.correctEntries = { debit: [{ accountName: "買掛金", amount: amt }], credit: [{ accountName: "当座預金", amount: amt }] };
       return q;
     }
