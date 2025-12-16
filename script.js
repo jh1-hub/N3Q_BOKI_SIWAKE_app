@@ -121,7 +121,7 @@ const adjustStepsForMutation = (originalSteps, originalQ, mutatedQ) => {
 
 // --- Components ---
 
-// 1. Calculator & Keypad
+// 1. Calculator & Keypad (Unchanged)
 const Keypad = ({ isOpen, onClose, onConfirm, initialValue }) => {
   const [value, setValue] = useState("0");
   const [calcMode, setCalcMode] = useState(false);
@@ -312,7 +312,6 @@ const ExplanationOverlay = ({ q, currentIndex, onClose }) => {
       }
   }
 
-  // Robust highlighting: If highlight text exists in q.text, replace it. Otherwise just return text.
   const displayHtml = currentStep && currentStep.highlight && q.text.includes(currentStep.highlight)
     ? q.text.replace(currentStep.highlight, `<span class="bg-yellow-300 px-1 rounded shadow-sm transition-all duration-300">${currentStep.highlight}</span>`)
     : q.text;
@@ -504,7 +503,14 @@ const CollectionScreen = ({ setScreen, userStats }) => {
 // 6. Main App Component
 const App = () => {
   const [screen, setScreen] = useState('home'); 
-  const [userStats, setUserStats] = useState({ correct: 0, total: 0, history: [], categoryScores: {}, inventory: [] });
+  const [userStats, setUserStats] = useState({ 
+    correct: 0, 
+    total: 0, 
+    history: [], 
+    categoryScores: {}, 
+    inventory: [],
+    lastPlayedSubGenre: null // For repetition penalty
+  });
   const [questions, setQuestions] = useState([]);
   const [currentSession, setCurrentSession] = useState([]);
   const [sessionMode, setSessionMode] = useState(null); 
@@ -519,6 +525,10 @@ const App = () => {
   const [showResultModal, setShowResultModal] = useState(false);
   const [lastResult, setLastResult] = useState(null); 
   
+  // Time and Bonuses
+  const [sessionStartTime, setSessionStartTime] = useState(0);
+  const [hasRepetitionPenalty, setHasRepetitionPenalty] = useState(false);
+
   // Next Button Delay State
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(false);
 
@@ -539,7 +549,12 @@ const App = () => {
     setQuestions(RAW_QUESTIONS); 
     const saved = localStorage.getItem('zensho_bookkeeping_v3');
     if (saved) {
-      try { setUserStats(JSON.parse(saved)); } catch(e) {}
+      try { 
+        const parsed = JSON.parse(saved);
+        // Ensure lastPlayedSubGenre exists for old data
+        if (!parsed.lastPlayedSubGenre) parsed.lastPlayedSubGenre = null;
+        setUserStats(parsed); 
+      } catch(e) {}
     }
   }, []);
 
@@ -568,7 +583,9 @@ const App = () => {
 
     if (pool.length === 0) return alert("準備中です");
 
-    pool = shuffleArray(pool).slice(0, mode === 'comprehensive' ? 10 : 5);
+    // Reduce session questions from 5 to 3 for genre-specific practice
+    pool = shuffleArray(pool).slice(0, mode === 'comprehensive' ? 10 : 3);
+    
     const session = pool.map(q => {
       const clone = JSON.parse(JSON.stringify(q));
       
@@ -590,6 +607,19 @@ const App = () => {
       return mutated;
     });
 
+    // Check for repetition penalty before updating state
+    let isPenalty = false;
+    if (mode === 'sub' && id && id === userStats.lastPlayedSubGenre) {
+        isPenalty = true;
+    }
+    setHasRepetitionPenalty(isPenalty);
+
+    // Update lastPlayedSubGenre immediately for next time
+    // If playing comprehensive or major, we clear the specific sub-genre focus
+    const newLastPlayed = (mode === 'sub') ? id : null;
+    setUserStats(prev => ({ ...prev, lastPlayedSubGenre: newLastPlayed }));
+
+    setSessionStartTime(Date.now()); // Start timer
     setSessionMode(mode); 
     setCurrentSession(session);
     setSessionResults([]); 
@@ -706,23 +736,85 @@ const App = () => {
   };
 
   const doGacha = () => {
+    // 1. Base Probabilities based on Score
     const scoreRate = sessionStats.correct / currentSession.length;
     let probs = { common: 100, rare: 0, super: 0 };
-    if (scoreRate === 1) probs = { common: 20, rare: 50, super: 30 };
-    else if (scoreRate >= 0.8) probs = { common: 40, rare: 50, super: 10 };
-    else if (scoreRate >= 0.6) probs = { common: 60, rare: 35, super: 5 };
-    else if (scoreRate > 0) probs = { common: 90, rare: 10, super: 0 };
-
-    const roll = Math.random() * 100;
-    let rarity = 1;
-    if (roll < probs.super) rarity = 3;
-    else if (roll < probs.super + probs.rare) rarity = 2;
-
-    const pool = COLLECTION_ITEMS.filter(i => i.rarity === rarity);
-    let item = pool[Math.floor(Math.random() * pool.length)];
     
-    if (rarity >= 2 && userStats.inventory.includes(item.id)) {
-       item = pool[Math.floor(Math.random() * pool.length)];
+    if (scoreRate === 1) { // 3/3 correct
+        probs = { common: 20, rare: 50, super: 30 };
+    } else if (scoreRate >= 0.6) { // 2/3 correct
+        probs = { common: 45, rare: 45, super: 10 };
+    } else if (scoreRate > 0) { // 1/3 correct
+        probs = { common: 90, rare: 10, super: 0 };
+    }
+
+    // 2. Time Bonus (Hidden)
+    // 1 min (60s) per question standard.
+    const duration = (Date.now() - sessionStartTime) / 1000;
+    const timeLimit = currentSession.length * 60; // e.g. 180s for 3 questions
+    let timeBonusRate = 0;
+    
+    if (duration < timeLimit && scoreRate > 0) {
+        // 0.2% boost per second saved
+        timeBonusRate = (timeLimit - duration) * 0.2;
+        // Cap bonus to prevent breaking logic (max +20% for example)
+        if (timeBonusRate > 20) timeBonusRate = 20;
+    }
+
+    // 3. Repetition Penalty
+    let penaltyRate = 0;
+    if (hasRepetitionPenalty) {
+        penaltyRate = 20; // 20% penalty to Rare+ chances
+    }
+
+    // 4. Adjust Probabilities
+    // Shift from Common to Higher tiers (Bonus) or Higher to Common (Penalty)
+    // Net adjustment = Bonus - Penalty
+    let netAdjustment = timeBonusRate - penaltyRate;
+
+    // Apply to Super Rare (approx 1/3 of impact) and Rare (2/3 of impact)
+    // Simplified: Modify Rare and Super Rare, then remaining is Common.
+    
+    // Safety check: Don't reduce below 0
+    let newSuper = probs.super + (netAdjustment * 0.3);
+    if (newSuper < 0) newSuper = 0;
+    
+    let newRare = probs.rare + (netAdjustment * 0.7);
+    if (newRare < 0) newRare = 0;
+    
+    let newCommon = 100 - (newSuper + newRare);
+    if (newCommon > 100) newCommon = 100;
+    if (newCommon < 0) newCommon = 0; // Should not happen with valid logic but safe check
+
+    // Normalized Probabilities
+    const finalProbs = { common: newCommon, rare: newRare, super: newSuper };
+
+    // 5. Draw
+    const rollCard = () => {
+        const roll = Math.random() * 100;
+        let rarity = 1;
+        if (roll < finalProbs.super) rarity = 3;
+        else if (roll < finalProbs.super + finalProbs.rare) rarity = 2;
+        
+        const pool = COLLECTION_ITEMS.filter(i => i.rarity === rarity);
+        return pool[Math.floor(Math.random() * pool.length)];
+    };
+
+    let item = rollCard();
+
+    // 6. Reroll Logic (Duplicate Protection for Rare+)
+    const isOwned = (id) => userStats.inventory.includes(id);
+    
+    if (item.rarity >= 2 && isOwned(item.id)) {
+        const firstDrawId = item.id;
+        // Try one reroll
+        item = rollCard();
+        
+        // If exact same card drawn again, fallback to random Common (Bad Luck)
+        if (item.id === firstDrawId) {
+            const commonPool = COLLECTION_ITEMS.filter(i => i.rarity === 1);
+            item = commonPool[Math.floor(Math.random() * commonPool.length)];
+        }
     }
 
     if (scoreRate === 0) {
