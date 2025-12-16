@@ -4,21 +4,33 @@ import { createRoot } from 'react-dom/client';
 import { COLLECTION_ITEMS, GENRE_STRUCTURE } from './data.js';
 
 // Import split question/explanation files
-import { RAW_QUESTIONS_OTHERS } from './questions.js';
 import { QUESTIONS_INTRO_CASH } from './questions_intro_cash.js';
+import { QUESTIONS_NOTES_CLAIMS } from './questions_notes_claims.js';
+import { QUESTIONS_ASSETS_TAX } from './questions_assets_tax.js';
+import { QUESTIONS_SETTLEMENT } from './questions_settlement.js';
+import { QUESTIONS_SETTLEMENT_ADV } from './questions_settlement_adv.js';
 
-import { EXPLANATIONS_OTHERS } from './explanations.js';
 import { EXPLANATIONS_INTRO_CASH } from './explanations_intro_cash.js';
+import { EXPLANATIONS_NOTES_CLAIMS } from './explanations_notes_claims.js';
+import { EXPLANATIONS_ASSETS_TAX } from './explanations_assets_tax.js';
+import { EXPLANATIONS_SETTLEMENT } from './explanations_settlement.js';
+import { EXPLANATIONS_SETTLEMENT_ADV } from './explanations_settlement_adv.js';
 
 // Combine them into single datasets
 const RAW_QUESTIONS = [
   ...QUESTIONS_INTRO_CASH,
-  ...RAW_QUESTIONS_OTHERS
+  ...QUESTIONS_NOTES_CLAIMS,
+  ...QUESTIONS_ASSETS_TAX,
+  ...QUESTIONS_SETTLEMENT,
+  ...QUESTIONS_SETTLEMENT_ADV
 ];
 
 const EXPLANATIONS = {
   ...EXPLANATIONS_INTRO_CASH,
-  ...EXPLANATIONS_OTHERS
+  ...EXPLANATIONS_NOTES_CLAIMS,
+  ...EXPLANATIONS_ASSETS_TAX,
+  ...EXPLANATIONS_SETTLEMENT,
+  ...EXPLANATIONS_SETTLEMENT_ADV
 };
 
 // --- Utilities ---

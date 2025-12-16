@@ -52,13 +52,13 @@ export const QUESTIONS_INTRO_CASH = [
   },
   {
     id: 'n3_cash_04', major: 'intro_cash', sub: 'cash_deposits',
-    text: "当座預金口座（一勘定制、貸方残高 200,000円）に、売掛金の回収として現金 300,000円 を預け入れた。",
+    text: "手元にあった現金 300,000円 を、当座預金口座（一勘定制、貸方残高 200,000円）に預け入れた。",
     correctEntries: { debit: [{ accountName: "当座預金", amount: 300000 }], credit: [{ accountName: "現金", amount: 300000 }] },
     choices: ["当座預金", "現金", "当座借越", "売掛金"],
     mutate: (q) => {
       const deposit = Randomizer.getAmount(300000, 0.2, 1000);
       const balance = Randomizer.round(deposit * 0.7, 1000);
-      q.text = `当座預金口座（一勘定制、貸方残高 ${Randomizer.fmt(balance)}円）に、売掛金の回収として現金 ${Randomizer.fmt(deposit)}円 を預け入れた。`;
+      q.text = `手元にあった現金 ${Randomizer.fmt(deposit)}円 を、当座預金口座（一勘定制、貸方残高 ${Randomizer.fmt(balance)}円）に預け入れた。`;
       q.correctEntries = { debit: [{ accountName: "当座預金", amount: deposit }], credit: [{ accountName: "現金", amount: deposit }] };
       return q;
     }
