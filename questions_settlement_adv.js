@@ -58,6 +58,18 @@ export const QUESTIONS_SETTLEMENT_ADV = [
       return q;
     }
   },
+  {
+    id: 'n3_st_22', major: 'settlement_adv', sub: 'accrual_deferral',
+    text: "従業員の給料（当月分）200,000円 が未払いとなっているため、これを計上する。",
+    correctEntries: { debit: [{ accountName: "給料", amount: 200000 }], credit: [{ accountName: "未払給料", amount: 200000 }] },
+    choices: ["給料", "未払給料", "未払金", "預り金"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(200000, 0.1, 10000);
+      q.text = `従業員の給料（当月分）${Randomizer.fmt(amt)}円 が未払いとなっているため、これを計上する。`;
+      q.correctEntries = { debit: [{ accountName: "給料", amount: amt }], credit: [{ accountName: "未払給料", amount: amt }] };
+      return q;
+    }
+  },
 
   // --- 2. CASH SHORTAGE & SUPPLIES (現金過不足・貯蔵品) ---
   {
@@ -83,6 +95,42 @@ export const QUESTIONS_SETTLEMENT_ADV = [
       const total = stamps + revStamps;
       q.text = `決算において、未使用の切手 ${Randomizer.fmt(stamps)}円 と収入印紙 ${Randomizer.fmt(revStamps)}円 が残っているため、これを貯蔵品に振り替える。なお、購入時に全額費用（通信費・租税公課）として処理している。`;
       q.correctEntries = { debit: [{ accountName: "貯蔵品", amount: total }], credit: [{ accountName: "通信費", amount: stamps }, { accountName: "租税公課", amount: revStamps }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_23', major: 'settlement_adv', sub: 'cash_shortage',
+    text: "購入時に資産（消耗品）として処理していたコピー用紙等のうち、当期に使用した分 40,000円 を費用に振り替える。",
+    correctEntries: { debit: [{ accountName: "消耗品費", amount: 40000 }], credit: [{ accountName: "消耗品", amount: 40000 }] },
+    choices: ["消耗品費", "消耗品", "雑費", "備品"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(40000, 0.2, 1000);
+      q.text = `購入時に資産（消耗品）として処理していたコピー用紙等のうち、当期に使用した分 ${Randomizer.fmt(amt)}円 を費用に振り替える。`;
+      q.correctEntries = { debit: [{ accountName: "消耗品費", amount: amt }], credit: [{ accountName: "消耗品", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_24', major: 'settlement_adv', sub: 'cash_shortage',
+    text: "期中に現金過不足（貸方）として処理していた 500円 について、決算になっても原因が判明しないため、適切に処理する。",
+    correctEntries: { debit: [{ accountName: "現金過不足", amount: 500 }], credit: [{ accountName: "雑益", amount: 500 }] },
+    choices: ["現金過不足", "雑益", "雑損", "現金"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(500, 0.5, 100);
+      q.text = `期中に現金過不足（貸方）として処理していた ${Randomizer.fmt(amt)}円 について、決算になっても原因が判明しないため、適切に処理する。`;
+      q.correctEntries = { debit: [{ accountName: "現金過不足", amount: amt }], credit: [{ accountName: "雑益", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_28', major: 'settlement_adv', sub: 'cash_shortage',
+    text: "決算において、現金の実際有高が帳簿残高より 1,000円 少ないことが判明した。原因は不明である。",
+    correctEntries: { debit: [{ accountName: "雑損", amount: 1000 }], credit: [{ accountName: "現金", amount: 1000 }] },
+    choices: ["雑損", "現金", "現金過不足", "雑益"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(1000, 0.2, 100);
+      q.text = `決算において、現金の実際有高が帳簿残高より ${Randomizer.fmt(amt)}円 少ないことが判明した。原因は不明である。`;
+      q.correctEntries = { debit: [{ accountName: "雑損", amount: amt }], credit: [{ accountName: "現金", amount: amt }] };
       return q;
     }
   },
@@ -132,9 +180,19 @@ export const QUESTIONS_SETTLEMENT_ADV = [
     mutate: (q) => {
       const total = Randomizer.getAmount(5000000, 0.1, 100000);
       q.text = `収益の各勘定残高の合計（売上など） ${Randomizer.fmt(total)}円 を損益勘定に振り替える。`;
-      // Note: Simplifying "Various Revenue Accounts" to "Sales" for representation in 3rd grade app context often acceptable, 
-      // or strictly "諸収益". Let's use "売上" as representative for visualization.
       q.correctEntries = { debit: [{ accountName: "売上", amount: total }], credit: [{ accountName: "損益", amount: total }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_29', major: 'settlement_adv', sub: 'closing_entries',
+    text: "費用の各勘定残高の合計 4,500,000円 を損益勘定に振り替える。",
+    correctEntries: { debit: [{ accountName: "損益", amount: 4500000 }], credit: [{ accountName: "仕入", amount: 4500000 }] },
+    choices: ["損益", "仕入", "売上", "繰越利益剰余金"],
+    mutate: (q) => {
+      const total = Randomizer.getAmount(4500000, 0.1, 100000);
+      q.text = `費用の各勘定残高の合計（仕入など） ${Randomizer.fmt(total)}円 を損益勘定に振り替える。`;
+      q.correctEntries = { debit: [{ accountName: "損益", amount: total }], credit: [{ accountName: "仕入", amount: total }] };
       return q;
     }
   }

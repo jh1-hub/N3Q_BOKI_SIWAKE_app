@@ -35,6 +35,13 @@ export const EXPLANATIONS_SETTLEMENT_ADV = {
       { comment: "その分を「前受地代」（負債）として次期に繰り越します。", highlight: "", credit: true, creditKey: "前受地代" }
     ]
   },
+  'n3_st_22': { 
+    explanation: "継続的なサービス提供契約に基づく費用の見越し計上です。",
+    steps: [
+      { comment: "当月分の労働は提供されているので、費用として「給料」を計上します。", highlight: "従業員の給料（当月分）", debit: true, debitKey: "給料" },
+      { comment: "まだ支払っていないので「未払給料」（負債）とします。", highlight: "未払いとなっている", credit: true, creditKey: "未払給料" }
+    ]
+  },
 
   // --- Cash Shortage & Supplies ---
   'n3_st_05': { 
@@ -49,6 +56,27 @@ export const EXPLANATIONS_SETTLEMENT_ADV = {
     steps: [
       { comment: "未使用分の合計（5,000+3,000=8,000円）を「貯蔵品」（資産）として計上します。", highlight: "貯蔵品に振り替える", debit: true, debitKey: "貯蔵品" },
       { comment: "その分、当期の費用（通信費、租税公課）を取り消します（貸方）。", highlight: "未使用の切手...収入印紙", credit: true, creditKey: "通信費" }
+    ]
+  },
+  'n3_st_23': { 
+    explanation: "購入時に「資産」処理していた消耗品のうち、使った分を「費用」に振り替えます。",
+    steps: [
+      { comment: "使用した分は消費されたので、「消耗品費」（費用）に変わります。", highlight: "当期に使用した分", debit: true, debitKey: "消耗品費" },
+      { comment: "その分、資産計上していた「消耗品」を減らします（貸方）。", highlight: "資産（消耗品）として処理していた", credit: true, creditKey: "消耗品" }
+    ]
+  },
+  'n3_st_24': { 
+    explanation: "現金過不足（貸方）は、現金が帳簿より多かった状態。原因不明なら「雑益」とします。",
+    steps: [
+      { comment: "「現金過不足」（貸方残高）を消すために借方に記入します。", highlight: "現金過不足（貸方）", debit: true, debitKey: "現金過不足" },
+      { comment: "原因不明の余剰分は、利益として「雑益」に計上します。", highlight: "原因が判明しない", credit: true, creditKey: "雑益" }
+    ]
+  },
+  'n3_st_28': { 
+    explanation: "期中処理を経ずに、決算でいきなり現金不足が判明した場合の処理です。",
+    steps: [
+      { comment: "実際有高に合わせて「現金」を減らします（貸方）。", highlight: "実際有高が帳簿残高より...少ない", credit: true, creditKey: "現金" },
+      { comment: "決算なので「現金過不足」は使わず、直接「雑損」で処理します。", highlight: "原因は不明", debit: true, debitKey: "雑損" }
     ]
   },
 
@@ -79,6 +107,13 @@ export const EXPLANATIONS_SETTLEMENT_ADV = {
     steps: [
       { comment: "収益（貸方科目）をゼロにするため、借方に記入します。", highlight: "収益の各勘定残高", debit: true, debitKey: "売上" },
       { comment: "その合計を「損益」勘定の貸方に集めます。", highlight: "損益勘定に振り替える", credit: true, creditKey: "損益" }
+    ]
+  },
+  'n3_st_29': { 
+    explanation: "決算振替の第二段階：費用勘定の振替です。",
+    steps: [
+      { comment: "費用（借方科目）をゼロにするため、貸方に記入します。", highlight: "費用の各勘定残高", credit: true, creditKey: "仕入" },
+      { comment: "その合計を「損益」勘定の借方に集めます。", highlight: "損益勘定に振り替える", debit: true, debitKey: "損益" }
     ]
   }
 };

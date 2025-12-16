@@ -29,17 +29,6 @@ export const QUESTIONS_SETTLEMENT = [
   },
   {
     id: 'n3_st_10', major: 'settlement', sub: 'inventory_closing',
-    text: "決算整理を行う。期首商品棚卸高 50,000円、当期商品仕入高 400,000円、期末商品棚卸高 60,000円。売上原価勘定を用いて計算する。",
-    correctEntries: { 
-      debit: [{ accountName: "売上原価", amount: 450000 }], 
-      credit: [{ accountName: "繰越商品", amount: 50000 }, { accountName: "仕入", amount: 400000 }] 
-    },
-    // Note: The second part (Transferring closing inventory) is often separate or combined. 
-    // For simplicity in this app, let's assume standard "Shi-Kuri/Kuri-Shi" method is preferred, 
-    // but this question specifies "Using Cost of Goods Sold Account" (UriageGenka).
-    // Let's implement the specific transfer: Opening + Purchase -> COGS, then COGS -> Closing (Credit side).
-    // Actually in 3rd grade, usually "Shi-Kuri/Kuri-Shi" is dominant. 
-    // Let's stick to "Shi-Kuri/Kuri-Shi" but with a slight variation in numbers.
     text: "決算につき、売上原価を算定する。期首商品棚卸高 30,000円、期末商品棚卸高 45,000円。なお、売上原価は「仕入」勘定で算定する。",
     correctEntries: { 
       debit: [{ accountName: "仕入", amount: 30000 }, { accountName: "繰越商品", amount: 45000 }], 
@@ -53,6 +42,72 @@ export const QUESTIONS_SETTLEMENT = [
       q.correctEntries = { 
         debit: [{ accountName: "仕入", amount: opening }, { accountName: "繰越商品", amount: closing }], 
         credit: [{ accountName: "繰越商品", amount: opening }, { accountName: "仕入", amount: closing }] 
+      };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_25', major: 'settlement', sub: 'inventory_closing',
+    text: "決算整理を行う。期首商品棚卸高 200,000円、当期商品仕入高 1,800,000円、期末商品棚卸高 250,000円。売上原価は「売上原価」勘定で算定する。",
+    correctEntries: { 
+      debit: [{ accountName: "売上原価", amount: 200000 }, { accountName: "売上原価", amount: 1800000 }, { accountName: "繰越商品", amount: 250000 }], 
+      credit: [{ accountName: "繰越商品", amount: 200000 }, { accountName: "仕入", amount: 1800000 }, { accountName: "売上原価", amount: 250000 }] 
+    },
+    // Note: The "Sales Cost Account" method involves:
+    // 1. Transfer Opening Inventory to Sales Cost (Dr Sales Cost / Cr Inventory)
+    // 2. Transfer Purchases to Sales Cost (Dr Sales Cost / Cr Purchases)
+    // 3. Transfer Closing Inventory out of Sales Cost (Dr Inventory / Cr Sales Cost)
+    // To fit the app's line limit, usually these are done in separate steps or lines.
+    // Let's simplify to standard Shi-Kuri for the app's main audience, OR use a combined entry.
+    // Actually, 3-kyu mainly uses Shi-Kuri/Kuri-Shi. Let's provide a variation of Shi-Kuri where numbers are different.
+    // Revised: Using "Standard Method" but emphasizing the values.
+    text: "決算整理前の試算表における繰越商品（期首在庫）は 60,000円、仕入（当期仕入）は 500,000円 であった。期末商品棚卸高 70,000円 に基づき、売上原価を算定する（仕入勘定を使用）。",
+    correctEntries: { 
+        debit: [{ accountName: "仕入", amount: 60000 }, { accountName: "繰越商品", amount: 70000 }], 
+        credit: [{ accountName: "繰越商品", amount: 60000 }, { accountName: "仕入", amount: 70000 }] 
+    },
+    choices: ["仕入", "繰越商品", "売上", "損益"],
+    mutate: (q) => {
+        const opening = Randomizer.getAmount(60000, 0.1, 1000);
+        const purchase = 500000; // Not used in entry but in text context
+        const closing = Randomizer.getAmount(70000, 0.1, 1000);
+        q.text = `決算整理前の試算表における繰越商品（期首在庫）は ${Randomizer.fmt(opening)}円、仕入（当期仕入）は 500,000円 であった。期末商品棚卸高 ${Randomizer.fmt(closing)}円 に基づき、売上原価を算定する（仕入勘定を使用）。`;
+        q.correctEntries = { 
+            debit: [{ accountName: "仕入", amount: opening }, { accountName: "繰越商品", amount: closing }], 
+            credit: [{ accountName: "繰越商品", amount: opening }, { accountName: "仕入", amount: closing }] 
+        };
+        return q;
+    }
+  },
+  {
+    id: 'n3_st_26', major: 'settlement', sub: 'inventory_closing',
+    text: "商品の実地棚卸を行ったところ、帳簿棚卸高 100,000円 に対し、実際棚卸高は 95,000円 であった。棚卸減耗損を計上する。",
+    correctEntries: { debit: [{ accountName: "棚卸減耗損", amount: 5000 }], credit: [{ accountName: "繰越商品", amount: 5000 }] },
+    choices: ["棚卸減耗損", "繰越商品", "仕入", "雑損"],
+    mutate: (q) => {
+      const book = Randomizer.getAmount(100000, 0.1, 1000);
+      const diff = 5000;
+      const actual = book - diff;
+      q.text = `商品の実地棚卸を行ったところ、帳簿棚卸高 ${Randomizer.fmt(book)}円 に対し、実際棚卸高は ${Randomizer.fmt(actual)}円 であった。棚卸減耗損を計上する。`;
+      q.correctEntries = { debit: [{ accountName: "棚卸減耗損", amount: diff }], credit: [{ accountName: "繰越商品", amount: diff }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_27', major: 'settlement', sub: 'inventory_closing',
+    text: "決算整理を行う。期首商品棚卸高 40,000円、期末商品棚卸高 30,000円。売上原価は「売上原価」勘定で算定する。（※売上原価勘定への振替のみを行う）",
+    correctEntries: { 
+        debit: [{ accountName: "売上原価", amount: 40000 }, { accountName: "繰越商品", amount: 30000 }], 
+        credit: [{ accountName: "繰越商品", amount: 40000 }, { accountName: "売上原価", amount: 30000 }] 
+    },
+    choices: ["売上原価", "繰越商品", "仕入", "損益"],
+    mutate: (q) => {
+      const opening = Randomizer.getAmount(40000, 0.1, 1000);
+      const closing = Randomizer.getAmount(30000, 0.1, 1000);
+      q.text = `決算整理を行う。期首商品棚卸高 ${Randomizer.fmt(opening)}円、期末商品棚卸高 ${Randomizer.fmt(closing)}円。売上原価は「売上原価」勘定で算定する。（※売上原価勘定への在庫の振替のみを行う）`;
+      q.correctEntries = { 
+          debit: [{ accountName: "売上原価", amount: opening }, { accountName: "繰越商品", amount: closing }], 
+          credit: [{ accountName: "繰越商品", amount: opening }, { accountName: "売上原価", amount: closing }] 
       };
       return q;
     }
@@ -103,6 +158,32 @@ export const QUESTIONS_SETTLEMENT = [
       return q;
     }
   },
+  {
+    id: 'n3_st_19', major: 'settlement', sub: 'bad_debts_closing',
+    text: "得意先が倒産し、当期に発生した売掛金 50,000円 が貸倒れとなった。",
+    correctEntries: { debit: [{ accountName: "貸倒損失", amount: 50000 }], credit: [{ accountName: "売掛金", amount: 50000 }] },
+    choices: ["貸倒損失", "売掛金", "貸倒引当金", "貸倒引当金戻入"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(50000, 0.2, 1000);
+      q.text = `得意先が倒産し、当期に発生した売掛金 ${Randomizer.fmt(amt)}円 が貸倒れとなった。`;
+      q.correctEntries = { debit: [{ accountName: "貸倒損失", amount: amt }], credit: [{ accountName: "売掛金", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_30', major: 'settlement', sub: 'bad_debts_closing',
+    text: "得意先が倒産し、前期以前からある売掛金 30,000円 が貸倒れとなった。なお、貸倒引当金の残高は 10,000円 である。",
+    correctEntries: { debit: [{ accountName: "貸倒引当金", amount: 10000 }, { accountName: "貸倒損失", amount: 20000 }], credit: [{ accountName: "売掛金", amount: 30000 }] },
+    choices: ["貸倒引当金", "貸倒損失", "売掛金", "現金"],
+    mutate: (q) => {
+      const debt = Randomizer.getAmount(30000, 0.2, 1000);
+      const allowance = 10000;
+      const loss = debt - allowance;
+      q.text = `得意先が倒産し、前期以前からある売掛金 ${Randomizer.fmt(debt)}円 が貸倒れとなった。なお、貸倒引当金の残高は ${Randomizer.fmt(allowance)}円 である。`;
+      q.correctEntries = { debit: [{ accountName: "貸倒引当金", amount: allowance }, { accountName: "貸倒損失", amount: loss }], credit: [{ accountName: "売掛金", amount: debt }] };
+      return q;
+    }
+  },
 
   // --- 3. DEPRECIATION (減価償却) ---
   {
@@ -145,6 +226,36 @@ export const QUESTIONS_SETTLEMENT = [
       const dep = annualDep * months / 12;
       q.text = `当期の10月1日に購入した営業用車両（取得原価 ${Randomizer.fmt(cost)}円、耐用年数 10年、残存価額ゼロ、定額法）の決算整理（3月31日）を行う。記帳方法は間接法とし、月割計算すること。`;
       q.correctEntries = { debit: [{ accountName: "減価償却費", amount: dep }], credit: [{ accountName: "減価償却累計額", amount: dep }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_20', major: 'settlement', sub: 'depreciation_closing',
+    text: "期中に売却した備品（当期首帳簿価額 200,000円、取得原価 500,000円、耐用年数5年、定額法）について、期首から売却時点までの半年分の減価償却費を計上する。なお、記帳方法は間接法による。",
+    correctEntries: { debit: [{ accountName: "減価償却費", amount: 50000 }], credit: [{ accountName: "減価償却累計額", amount: 50000 }] },
+    choices: ["減価償却費", "減価償却累計額", "備品", "固定資産売却損"],
+    mutate: (q) => {
+      const cost = 500000;
+      const years = 5;
+      const annualDep = cost / years; // 100,000
+      const months = 6;
+      const dep = annualDep * months / 12; // 50,000
+      q.text = `期中に売却した備品（当期首帳簿価額 200,000円、取得原価 ${Randomizer.fmt(cost)}円、耐用年数${years}年、定額法）について、期首から売却時点までの半年分の減価償却費を計上する。なお、記帳方法は間接法による。`;
+      q.correctEntries = { debit: [{ accountName: "減価償却費", amount: dep }], credit: [{ accountName: "減価償却累計額", amount: dep }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_21', major: 'settlement', sub: 'depreciation_closing',
+    text: "建物について減価償却を行う。取得原価 10,000,000円、耐用年数 50年、定額法、直接法により記帳する。",
+    correctEntries: { debit: [{ accountName: "減価償却費", amount: 200000 }], credit: [{ accountName: "建物", amount: 200000 }] },
+    choices: ["減価償却費", "建物", "減価償却累計額", "損益"],
+    mutate: (q) => {
+      const cost = 10000000;
+      const years = 50;
+      const dep = cost / years;
+      q.text = `建物について減価償却を行う。取得原価 ${Randomizer.fmt(cost)}円、耐用年数 ${years}年、定額法、直接法により記帳する。`;
+      q.correctEntries = { debit: [{ accountName: "減価償却費", amount: dep }], credit: [{ accountName: "建物", amount: dep }] };
       return q;
     }
   }

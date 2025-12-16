@@ -44,6 +44,22 @@ export const EXPLANATIONS_INTRO_CASH = {
       { comment: "同額を小切手で補給したので、「当座預金」が減少します。", highlight: "小切手を振り出して...補給した", credit: true, creditKey: "当座預金" }
     ]
   },
+  'n3_cash_06': { 
+    explanation: "「二勘定制」では、預金残高を超える支払額を「当座借越」（負債）として処理します。",
+    steps: [
+      { comment: "買掛金を支払ったので「買掛金」を減らします。", highlight: "買掛金 100,000円 を支払うため", debit: true, debitKey: "買掛金" },
+      { comment: "当座預金の残高（30,000円）までは「当座預金」を減らします。", highlight: "当座預金残高は 30,000円", credit: true, creditKey: "当座預金" },
+      { comment: "残高を超える分（70,000円）は銀行への借金なので、「当座借越」として貸方に計上します。", highlight: "「二勘定制」を採用している", credit: true, creditKey: "当座借越" }
+    ]
+  },
+  'n3_cash_07': { 
+    explanation: "借越状態（二勘定制）の口座に入金した場合、まず「当座借越」を解消し、残りを「当座預金」に入れます。",
+    steps: [
+      { comment: "現金を預け入れたので、貸方に「現金」です。", highlight: "現金 200,000円 を...入金した", credit: true, creditKey: "現金" },
+      { comment: "借金である「当座借越」50,000円を優先的に返済（借方）します。", highlight: "50,000円 の借越状態", debit: true, debitKey: "当座借越" },
+      { comment: "残りの金額（150,000円）で「当座預金」のプラス残高を作ります。", highlight: "当座預金口座に", debit: true, debitKey: "当座預金" }
+    ]
+  },
 
   // --- Merchandise Basic ---
   'n3_md_01': { 

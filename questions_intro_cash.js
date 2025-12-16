@@ -77,6 +77,34 @@ export const QUESTIONS_INTRO_CASH = [
       return q;
     }
   },
+  {
+    id: 'n3_cash_06', major: 'intro_cash', sub: 'cash_deposits',
+    text: "当座預金残高は 30,000円 であるが、買掛金 100,000円 を支払うため小切手を振り出した。なお、当座預金については「二勘定制」を採用している（借越限度額内）。",
+    correctEntries: { debit: [{ accountName: "買掛金", amount: 100000 }], credit: [{ accountName: "当座預金", amount: 30000 }, { accountName: "当座借越", amount: 70000 }] },
+    choices: ["買掛金", "当座預金", "当座借越", "借入金"],
+    mutate: (q) => {
+      const payment = Randomizer.getAmount(100000, 0.2, 1000);
+      const balance = 30000;
+      const overdraft = payment - balance;
+      q.text = `当座預金残高は ${Randomizer.fmt(balance)}円 であるが、買掛金 ${Randomizer.fmt(payment)}円 を支払うため小切手を振り出した。なお、当座預金については「二勘定制」を採用している（借越限度額内）。`;
+      q.correctEntries = { debit: [{ accountName: "買掛金", amount: payment }], credit: [{ accountName: "当座預金", amount: balance }, { accountName: "当座借越", amount: overdraft }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_cash_07', major: 'intro_cash', sub: 'cash_deposits',
+    text: "現金 200,000円 を当座預金口座に入金した。なお、同口座は現在 50,000円 の借越状態（二勘定制）である。",
+    correctEntries: { debit: [{ accountName: "当座借越", amount: 50000 }, { accountName: "当座預金", amount: 150000 }], credit: [{ accountName: "現金", amount: 200000 }] },
+    choices: ["当座預金", "当座借越", "現金", "借入金"],
+    mutate: (q) => {
+      const deposit = Randomizer.getAmount(200000, 0.1, 1000);
+      const overdraft = 50000;
+      const netDeposit = deposit - overdraft;
+      q.text = `現金 ${Randomizer.fmt(deposit)}円 を当座預金口座に入金した。なお、同口座は現在 ${Randomizer.fmt(overdraft)}円 の借越状態（二勘定制）である。`;
+      q.correctEntries = { debit: [{ accountName: "当座借越", amount: overdraft }, { accountName: "当座預金", amount: netDeposit }], credit: [{ accountName: "現金", amount: deposit }] };
+      return q;
+    }
+  },
 
   // ==========================================
   // 2. MERCHANDISE BASIC (商品売買・基本)

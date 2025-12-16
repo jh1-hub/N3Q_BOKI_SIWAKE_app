@@ -20,6 +20,27 @@ export const EXPLANATIONS_SETTLEMENT = {
       { comment: "【期末】新しい在庫を仕入から控除：借方「繰越商品」/貸方「仕入」", highlight: "期末商品棚卸高", credit: true, creditKey: "仕入" }
     ]
   },
+  'n3_st_25': { 
+    explanation: "「仕入」勘定で売上原価を算定する基本パターン（しーくり・くりし）です。",
+    steps: [
+      { comment: "【期首】期首在庫を仕入に加えます。", highlight: "繰越商品（期首在庫）", debit: true, debitKey: "仕入" },
+      { comment: "【期末】期末在庫を仕入から引いて、資産に戻します。", highlight: "期末商品棚卸高", credit: true, creditKey: "仕入" }
+    ]
+  },
+  'n3_st_26': { 
+    explanation: "実際の在庫が帳簿より少ない場合、「棚卸減耗損」を計上します。",
+    steps: [
+      { comment: "帳簿(10万)より実際(9.5万)が少ないので、資産である「繰越商品」を減らします（貸方）。", highlight: "実際棚卸高は 95,000円", credit: true, creditKey: "繰越商品" },
+      { comment: "減った分（差額5,000円）を費用である「棚卸減耗損」とします。", highlight: "棚卸減耗損を計上", debit: true, debitKey: "棚卸減耗損" }
+    ]
+  },
+  'n3_st_27': { 
+    explanation: "「売上原価」勘定を用いる方法（うり・くり・くり・うり）です。",
+    steps: [
+      { comment: "【期首】古い在庫を売上原価に加算：借方「売上原価」/貸方「繰越商品」", highlight: "期首商品棚卸高", debit: true, debitKey: "売上原価" },
+      { comment: "【期末】新しい在庫を売上原価から控除：借方「繰越商品」/貸方「売上原価」", highlight: "期末商品棚卸高", credit: true, creditKey: "売上原価" }
+    ]
+  },
 
   // --- Bad Debts ---
   'n3_st_01': { 
@@ -44,6 +65,21 @@ export const EXPLANATIONS_SETTLEMENT = {
     steps: [
       { comment: "現金を受け取ったので借方に「現金」。", highlight: "現金で回収された", debit: true, debitKey: "現金" },
       { comment: "前期の損失は確定済みなので取消しはできません。代わりに「償却債権取立益」（収益）を計上します。", highlight: "前期に貸倒れとして処理", credit: true, creditKey: "償却債権取立益" }
+    ]
+  },
+  'n3_st_19': { 
+    explanation: "当期に発生した債権が貸倒れた場合、引当金は使わずに全額「貸倒損失」とします。",
+    steps: [
+      { comment: "回収不能になった売掛金を消去します（貸方）。", highlight: "売掛金 50,000円", credit: true, creditKey: "売掛金" },
+      { comment: "当期発生分に対する引当金はまだ設定されていないため、全額を「貸倒損失」（費用）として処理します。", highlight: "当期に発生した", debit: true, debitKey: "貸倒損失" }
+    ]
+  },
+  'n3_st_30': { 
+    explanation: "前期以前からの債権が貸倒れた場合、引当金残高までは引当金を充当し、不足分を損失とします。",
+    steps: [
+      { comment: "売掛金を消去します（貸方）。", highlight: "売掛金 30,000円", credit: true, creditKey: "売掛金" },
+      { comment: "引当金の残高分（1万円）を使います。", highlight: "残高は 10,000円", debit: true, debitKey: "貸倒引当金" },
+      { comment: "足りない分（2万円）は「貸倒損失」とします。", highlight: "貸倒れとなった", debit: true, debitKey: "貸倒損失" }
     ]
   },
 
@@ -71,6 +107,22 @@ export const EXPLANATIONS_SETTLEMENT = {
       { comment: "当期の使用期間：10月1日〜3月31日 ＝ 6ヶ月", highlight: "10月1日に購入...決算整理（3月31日）", debit: false, credit: false },
       { comment: "当期償却額：120,000 × 6/12 = 60,000円", highlight: "月割計算", debit: true, debitKey: "減価償却費" },
       { comment: "間接法なので貸方は「減価償却累計額」。", highlight: "間接法", credit: true, creditKey: "減価償却累計額" }
+    ]
+  },
+  'n3_st_20': { 
+    explanation: "期中に売却した場合でも、売却時点までの減価償却費を月割で計上する必要があります。",
+    steps: [
+      { comment: "年間償却費：500,000 ÷ 5 = 100,000円", highlight: "取得原価...耐用年数5年", debit: false, credit: false },
+      { comment: "半年分：100,000 × 6/12 = 50,000円", highlight: "半年分の減価償却費", debit: true, debitKey: "減価償却費" },
+      { comment: "間接法なので貸方は「減価償却累計額」。", highlight: "間接法による", credit: true, creditKey: "減価償却累計額" }
+    ]
+  },
+  'n3_st_21': { 
+    explanation: "建物でも直接法で記帳する場合、建物の価額を直接減らします。",
+    steps: [
+      { comment: "計算：10,000,000 ÷ 50 = 200,000円", highlight: "耐用年数 50年", debit: false, credit: false },
+      { comment: "借方に「減価償却費」。", highlight: "減価償却を行う", debit: true, debitKey: "減価償却費" },
+      { comment: "直接法なので貸方は「建物」。", highlight: "直接法により記帳", credit: true, creditKey: "建物" }
     ]
   }
 };

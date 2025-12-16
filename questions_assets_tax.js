@@ -66,6 +66,20 @@ export const QUESTIONS_ASSETS_TAX = [
       return q;
     }
   },
+  {
+    id: 'n3_fa_05', major: 'assets_tax', sub: 'fixed_assets_buy',
+    text: "不要となった備品（取得原価 300,000円、帳簿価額 30,000円、直接法）を 10,000円 で売却し、代金は現金で受け取った。",
+    correctEntries: { debit: [{ accountName: "現金", amount: 10000 }, { accountName: "固定資産売却損", amount: 20000 }], credit: [{ accountName: "備品", amount: 30000 }] },
+    choices: ["現金", "固定資産売却損", "備品", "固定資産売却益"],
+    mutate: (q) => {
+      const bookValue = Randomizer.getAmount(30000, 0.1, 1000);
+      const sell = 10000;
+      const loss = bookValue - sell;
+      q.text = `不要となった備品（取得原価 300,000円、帳簿価額 ${Randomizer.fmt(bookValue)}円、直接法）を ${Randomizer.fmt(sell)}円 で売却し、代金は現金で受け取った。`;
+      q.correctEntries = { debit: [{ accountName: "現金", amount: sell }, { accountName: "固定資産売却損", amount: loss }], credit: [{ accountName: "備品", amount: bookValue }] };
+      return q;
+    }
+  },
 
   // --- 2. CONSUMPTION TAX (消費税) ---
   {
@@ -110,6 +124,32 @@ export const QUESTIONS_ASSETS_TAX = [
       return q;
     }
   },
+  {
+    id: 'n3_tx_07', major: 'assets_tax', sub: 'consumption_tax',
+    text: "消費税の中間納付を行い、現金 200,000円 を支払った。",
+    correctEntries: { debit: [{ accountName: "仮払消費税", amount: 200000 }], credit: [{ accountName: "現金", amount: 200000 }] },
+    choices: ["仮払消費税", "現金", "租税公課", "未払消費税"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(200000, 0.2, 10000);
+      q.text = `消費税の中間納付を行い、現金 ${Randomizer.fmt(amt)}円 を支払った。`;
+      q.correctEntries = { debit: [{ accountName: "仮払消費税", amount: amt }], credit: [{ accountName: "現金", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_tx_09', major: 'assets_tax', sub: 'consumption_tax',
+    text: "決算において消費税の納付額を計算した結果、仮払消費税 400,000円 が仮受消費税 350,000円 を上回っていたため、差額を未収還付法人税等として計上した。",
+    correctEntries: { debit: [{ accountName: "仮受消費税", amount: 350000 }, { accountName: "未収還付法人税等", amount: 50000 }], credit: [{ accountName: "仮払消費税", amount: 400000 }] },
+    choices: ["未収還付法人税等", "仮受消費税", "仮払消費税", "雑益"],
+    mutate: (q) => {
+      const paid = Randomizer.getAmount(400000, 0.1, 10000);
+      const received = Randomizer.round(paid * 0.8, 10000);
+      const diff = paid - received;
+      q.text = `決算において消費税の納付額を計算した結果、仮払消費税 ${Randomizer.fmt(paid)}円 が仮受消費税 ${Randomizer.fmt(received)}円 を上回っていたため、差額を未収還付法人税等として計上した。`;
+      q.correctEntries = { debit: [{ accountName: "仮受消費税", amount: received }, { accountName: "未収還付法人税等", amount: diff }], credit: [{ accountName: "仮払消費税", amount: paid }] };
+      return q;
+    }
+  },
 
   // --- 3. CORPORATE TAX & OTHERS (法人税等・租税公課) ---
   {
@@ -149,6 +189,30 @@ export const QUESTIONS_ASSETS_TAX = [
       const amt = Randomizer.getAmount(2000, 0.5, 100);
       q.text = `収入印紙 ${Randomizer.fmt(amt)}円 を現金で購入し、直ちに費用として処理した。`;
       q.correctEntries = { debit: [{ accountName: "租税公課", amount: amt }], credit: [{ accountName: "現金", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_tx_08', major: 'assets_tax', sub: 'corporate_tax',
+    text: "前期に確定した未払法人税等 100,000円 を現金で納付した。",
+    correctEntries: { debit: [{ accountName: "未払法人税等", amount: 100000 }], credit: [{ accountName: "現金", amount: 100000 }] },
+    choices: ["未払法人税等", "現金", "法人税等", "仮払法人税等"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(100000, 0.2, 10000);
+      q.text = `前期に確定した未払法人税等 ${Randomizer.fmt(amt)}円 を現金で納付した。`;
+      q.correctEntries = { debit: [{ accountName: "未払法人税等", amount: amt }], credit: [{ accountName: "現金", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_tx_10', major: 'assets_tax', sub: 'corporate_tax',
+    text: "法人税等の中間申告を行い、税額 80,000円 を当座預金口座から納付した。",
+    correctEntries: { debit: [{ accountName: "仮払法人税等", amount: 80000 }], credit: [{ accountName: "当座預金", amount: 80000 }] },
+    choices: ["仮払法人税等", "当座預金", "法人税等", "租税公課"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(80000, 0.2, 10000);
+      q.text = `法人税等の中間申告を行い、税額 ${Randomizer.fmt(amt)}円 を当座預金口座から納付した。`;
+      q.correctEntries = { debit: [{ accountName: "仮払法人税等", amount: amt }], credit: [{ accountName: "当座預金", amount: amt }] };
       return q;
     }
   }

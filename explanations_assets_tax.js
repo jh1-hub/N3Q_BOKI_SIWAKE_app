@@ -37,6 +37,14 @@ export const EXPLANATIONS_ASSETS_TAX = {
       { comment: "普通預金から支払ったので貸方に「普通預金」。", highlight: "普通預金から振り込んだ", credit: true, creditKey: "普通預金" }
     ]
   },
+  'n3_fa_05': { 
+    explanation: "直接法の売却処理です。固定資産勘定が既に帳簿価額になっている点に注意します。",
+    steps: [
+      { comment: "現金を受け取ったので借方に「現金」。", highlight: "代金は現金で受け取った", debit: true, debitKey: "現金" },
+      { comment: "直接法の場合、貸方は「備品」（帳簿価額）そのものになります。", highlight: "帳簿価額 30,000円、直接法", credit: true, creditKey: "備品" },
+      { comment: "帳簿価額(3万)より安く(1万)売ったので、差額は「固定資産売却損」です。", highlight: "10,000円 で売却", debit: true, debitKey: "固定資産売却損" }
+    ]
+  },
 
   // --- Consumption Tax ---
   'n3_tx_01': { 
@@ -63,6 +71,21 @@ export const EXPLANATIONS_ASSETS_TAX = {
       { comment: "預かった税金の方が多いので、差額を国に納める義務として「未払消費税」とします。", highlight: "差額を未払消費税", credit: true, creditKey: "未払消費税" }
     ]
   },
+  'n3_tx_07': { 
+    explanation: "消費税の中間納付時は、支払額を「仮払消費税」で処理します。",
+    steps: [
+      { comment: "確定申告前の一時払いなので「仮払消費税」として計上します。", highlight: "消費税の中間納付", debit: true, debitKey: "仮払消費税" },
+      { comment: "現金を支払ったので貸方は「現金」。", highlight: "現金...を支払った", credit: true, creditKey: "現金" }
+    ]
+  },
+  'n3_tx_09': { 
+    explanation: "支払った消費税（仮払）の方が多い場合、差額は還付されるため「未収還付法人税等」となります。",
+    steps: [
+      { comment: "「仮受消費税」を借方にして消します。", highlight: "仮受消費税 350,000円", debit: true, debitKey: "仮受消費税" },
+      { comment: "「仮払消費税」を貸方にして消します。", highlight: "仮払消費税 400,000円", credit: true, creditKey: "仮払消費税" },
+      { comment: "払いすぎている状態なので、後で返してもらう権利「未収還付法人税等」を計上します。", highlight: "差額を未収還付法人税等", debit: true, debitKey: "未収還付法人税等" }
+    ]
+  },
 
   // --- Corporate Tax & Others ---
   'n3_tx_03': { 
@@ -85,6 +108,20 @@ export const EXPLANATIONS_ASSETS_TAX = {
     steps: [
       { comment: "印紙税という税金の支払いなので「租税公課」とします。", highlight: "費用として処理した", debit: true, debitKey: "租税公課" },
       { comment: "現金で購入したので貸方は「現金」です。", highlight: "現金で購入", credit: true, creditKey: "現金" }
+    ]
+  },
+  'n3_tx_08': { 
+    explanation: "前期に計上した未払法人税等の納付仕訳です。",
+    steps: [
+      { comment: "納付義務を果たしたので、負債である「未払法人税等」を減らします（借方）。", highlight: "未払法人税等 100,000円", debit: true, debitKey: "未払法人税等" },
+      { comment: "現金で支払ったので貸方は「現金」。", highlight: "現金で納付", credit: true, creditKey: "現金" }
+    ]
+  },
+  'n3_tx_10': { 
+    explanation: "法人税の中間納付時は「仮払法人税等」として処理します。",
+    steps: [
+      { comment: "確定前の一時払いなので「仮払法人税等」として資産計上します。", highlight: "法人税等の中間申告", debit: true, debitKey: "仮払法人税等" },
+      { comment: "当座預金から支払ったので貸方は「当座預金」。", highlight: "当座預金口座から納付", credit: true, creditKey: "当座預金" }
     ]
   }
 };

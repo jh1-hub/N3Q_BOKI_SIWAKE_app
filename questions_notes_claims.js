@@ -201,5 +201,17 @@ export const QUESTIONS_NOTES_CLAIMS = [
       q.correctEntries = { debit: [{ accountName: "借入金", amount: principal }, { accountName: "支払利息", amount: interest }], credit: [{ accountName: "当座預金", amount: total }] };
       return q;
     }
+  },
+  {
+    id: 'n3_ln_05', major: 'notes_claims', sub: 'loans',
+    text: "運転資金として 800,000円 を借り入れ、約束手形を振り出して相手に渡した。なお、代金は現金で受け取った。",
+    correctEntries: { debit: [{ accountName: "現金", amount: 800000 }], credit: [{ accountName: "手形借入金", amount: 800000 }] },
+    choices: ["現金", "手形借入金", "借入金", "支払手形"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(800000, 0.1, 10000);
+      q.text = `運転資金として ${Randomizer.fmt(amt)}円 を借り入れ、約束手形を振り出して相手に渡した。なお、代金は現金で受け取った。`;
+      q.correctEntries = { debit: [{ accountName: "現金", amount: amt }], credit: [{ accountName: "手形借入金", amount: amt }] };
+      return q;
+    }
   }
 ];

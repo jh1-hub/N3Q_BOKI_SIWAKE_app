@@ -118,5 +118,12 @@ export const EXPLANATIONS_NOTES_CLAIMS = {
       { comment: "利息は費用として計上します。", highlight: "利息 5,000円", debit: true, debitKey: "支払利息" },
       { comment: "合計額が口座から引き落とされました。", highlight: "当座預金口座から引き落とされた", credit: true, creditKey: "当座預金" }
     ]
+  },
+  'n3_ln_05': { 
+    explanation: "手形を振り出して借金をした場合は「手形借入金」勘定を使用します。",
+    steps: [
+      { comment: "現金を借りたので、借方に「現金」が増えます。", highlight: "代金は現金で受け取った", debit: true, debitKey: "現金" },
+      { comment: "手形を用いた借入なので、「支払手形」ではなく「手形借入金」（負債）を使います。", highlight: "約束手形を振り出して", credit: true, creditKey: "手形借入金" }
+    ]
   }
 };
