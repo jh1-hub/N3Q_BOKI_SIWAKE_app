@@ -1,74 +1,12 @@
 
 /**
  * Nissho Bookkeeping Grade 3 Practice App
- * Question Definitions - Nissho Grade 3 Scope
- * React 19 Migration: ES Module Format
+ * Questions: Other Genres
  */
 
 import { Randomizer } from './data.js';
 
-export const RAW_QUESTIONS = [
-  // --- 1. CASH & DEPOSITS (現金・預金) ---
-  {
-    id: 'n3_cash_01', major: 'intro_cash', sub: 'cash_deposits',
-    text: "決算において、現金の実際有高を調べたところ 82,000円 であったが、帳簿残高は 83,500円 であった。不一致の原因は不明のため、適切に処理する。",
-    correctEntries: { debit: [{ accountName: "雑損", amount: 1500 }], credit: [{ accountName: "現金", amount: 1500 }] },
-    choices: ["雑損", "現金", "雑益", "現金過不足"],
-    mutate: (q) => {
-      const book = Randomizer.getAmount(83500, 0.1, 100);
-      const diff = 1500;
-      const actual = book - diff;
-      q.text = `決算において、現金の実際有高を調べたところ ${Randomizer.fmt(actual)}円 であったが、帳簿残高は ${Randomizer.fmt(book)}円 であった。不一致の原因は不明のため、適切に処理する。`;
-      q.correctEntries = { debit: [{ accountName: "雑損", amount: diff }], credit: [{ accountName: "現金", amount: diff }] };
-      return q;
-    }
-  },
-  {
-    id: 'n3_cash_02', major: 'intro_cash', sub: 'cash_deposits',
-    text: "当座預金の口座残高は 50,000円 であるが、取引銀行と限度額 1,000,000円 の当座借越契約を結んでいるため、仕入先への買掛金 150,000円 を支払うために小切手を振り出した。なお、当店では当座預金について「一勘定制」を採用している。",
-    correctEntries: { debit: [{ accountName: "買掛金", amount: 150000 }], credit: [{ accountName: "当座預金", amount: 150000 }] },
-    choices: ["買掛金", "当座預金", "当座借越", "借入金"],
-    mutate: (q) => {
-      const amt = Randomizer.getAmount(150000, 0.2, 1000);
-      q.text = `当座預金の口座残高は 50,000円 であるが、取引銀行と限度額 1,000,000円 の当座借越契約を結んでいるため、仕入先への買掛金 ${Randomizer.fmt(amt)}円 を支払うために小切手を振り出した。なお、当店では当座預金について「一勘定制」を採用している。`;
-      q.correctEntries = { debit: [{ accountName: "買掛金", amount: amt }], credit: [{ accountName: "当座預金", amount: amt }] };
-      return q;
-    }
-  },
-  
-  // --- 2. MERCHANDISE (商品売買・クレジット) ---
-  {
-    id: 'n3_md_01', major: 'intro_cash', sub: 'merch_basic',
-    text: "商品 300,000円 を仕入れ、代金のうち 100,000円 は現金で支払い、残額は掛けとした。なお、引取運賃 5,000円 は現金で支払った。",
-    correctEntries: { debit: [{ accountName: "仕入", amount: 305000 }], credit: [{ accountName: "現金", amount: 105000 }, { accountName: "買掛金", amount: 200000 }] },
-    choices: ["仕入", "現金", "買掛金", "発送費"],
-    mutate: (q) => {
-      const goods = Randomizer.getAmount(300000, 0.1, 1000);
-      const cashPart = 100000;
-      const ship = 5000;
-      const credit = goods - cashPart;
-      const totalDebit = goods + ship;
-      const totalCash = cashPart + ship;
-      q.text = `商品 ${Randomizer.fmt(goods)}円 を仕入れ、代金のうち ${Randomizer.fmt(cashPart)}円 は現金で支払い、残額は掛けとした。なお、引取運賃 ${Randomizer.fmt(ship)}円 は現金で支払った。`;
-      q.correctEntries = { debit: [{ accountName: "仕入", amount: totalDebit }], credit: [{ accountName: "現金", amount: totalCash }, { accountName: "買掛金", amount: credit }] };
-      return q;
-    }
-  },
-  {
-    id: 'n3_md_02', major: 'intro_cash', sub: 'credit_trans',
-    text: "商品 60,000円 をクレジット払いの条件で販売した。なお、信販会社への手数料（代金の2%）を見積もり、販売時に計上する。",
-    correctEntries: { debit: [{ accountName: "クレジット売掛金", amount: 58800 }, { accountName: "支払手数料", amount: 1200 }], credit: [{ accountName: "売上", amount: 60000 }] },
-    choices: ["クレジット売掛金", "支払手数料", "売上", "売掛金"],
-    mutate: (q) => {
-      const price = Randomizer.getAmount(60000, 0.2, 1000);
-      const fee = price * 0.02;
-      const receivable = price - fee;
-      q.text = `商品 ${Randomizer.fmt(price)}円 をクレジット払いの条件で販売した。なお、信販会社への手数料（代金の2%）を見積もり、販売時に計上する。`;
-      q.correctEntries = { debit: [{ accountName: "クレジット売掛金", amount: receivable }, { accountName: "支払手数料", amount: fee }], credit: [{ accountName: "売上", amount: price }] };
-      return q;
-    }
-  },
-
+export const RAW_QUESTIONS_OTHERS = [
   // --- 3. NOTES & ELECTRONIC CLAIMS (手形・電子記録債権) ---
   {
     id: 'n3_nt_01', major: 'notes_claims', sub: 'notes_elec',
@@ -94,8 +32,32 @@ export const RAW_QUESTIONS = [
       return q;
     }
   },
+  {
+    id: 'n3_nt_03', major: 'notes_claims', sub: 'notes_elec',
+    text: "Ａ社に対する売掛金 600,000円 を回収するため、同社振出しの約束手形を受け取った。",
+    correctEntries: { debit: [{ accountName: "受取手形", amount: 600000 }], credit: [{ accountName: "売掛金", amount: 600000 }] },
+    choices: ["受取手形", "売掛金", "電子記録債権", "現金"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(600000, 0.2, 1000);
+      q.text = `Ａ社に対する売掛金 ${Randomizer.fmt(amt)}円 を回収するため、同社振出しの約束手形を受け取った。`;
+      q.correctEntries = { debit: [{ accountName: "受取手形", amount: amt }], credit: [{ accountName: "売掛金", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_nt_04', major: 'notes_claims', sub: 'loans',
+    text: "従業員に対して 100,000円 を貸し付け、現金を手渡した。なお、返済期限は半年後である。",
+    correctEntries: { debit: [{ accountName: "従業員貸付金", amount: 100000 }], credit: [{ accountName: "現金", amount: 100000 }] },
+    choices: ["従業員貸付金", "現金", "貸付金", "給料"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(100000, 0.2, 1000);
+      q.text = `従業員に対して ${Randomizer.fmt(amt)}円 を貸し付け、現金を手渡した。なお、返済期限は半年後である。`;
+      q.correctEntries = { debit: [{ accountName: "従業員貸付金", amount: amt }], credit: [{ accountName: "現金", amount: amt }] };
+      return q;
+    }
+  },
 
-  // --- 4. FIXED ASSETS (固定資産) ---
+  // --- 4. FIXED ASSETS & TAX (固定資産・税金) ---
   {
     id: 'n3_fa_01', major: 'assets_tax', sub: 'fixed_assets_buy',
     text: "不要となった備品（取得原価 500,000円、減価償却累計額 450,000円、間接法）を 10,000円 で売却し、代金は月末に受け取ることにした。",
@@ -112,8 +74,6 @@ export const RAW_QUESTIONS = [
       return q;
     }
   },
-
-  // --- 5. TAX (税金) ---
   {
     id: 'n3_tx_01', major: 'assets_tax', sub: 'consumption_tax',
     text: "商品 200,000円（税抜）を仕入れ、消費税 10% を合わせた 220,000円 を掛けとした（税抜方式）。",
@@ -156,8 +116,36 @@ export const RAW_QUESTIONS = [
       return q;
     }
   },
+  {
+    id: 'n3_fa_02', major: 'assets_tax', sub: 'fixed_assets_buy',
+    text: "営業用の車両 2,000,000円 を購入し、代金は購入に伴う諸費用 100,000円 とともに小切手を振り出して支払った。",
+    correctEntries: { debit: [{ accountName: "車両運搬具", amount: 2100000 }], credit: [{ accountName: "当座預金", amount: 2100000 }] },
+    choices: ["車両運搬具", "当座預金", "租税公課", "修繕費"],
+    mutate: (q) => {
+      const cost = Randomizer.getAmount(2000000, 0.1, 10000);
+      const exp = 100000;
+      const total = cost + exp;
+      q.text = `営業用の車両 ${Randomizer.fmt(cost)}円 を購入し、代金は購入に伴う諸費用 ${Randomizer.fmt(exp)}円 とともに小切手を振り出して支払った。`;
+      q.correctEntries = { debit: [{ accountName: "車両運搬具", amount: total }], credit: [{ accountName: "当座預金", amount: total }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_tx_04', major: 'assets_tax', sub: 'corporate_tax',
+    text: "店舗兼倉庫の固定資産税 150,000円 と都市計画税 30,000円 の納付通知書を受け取り、現金で納付した。",
+    correctEntries: { debit: [{ accountName: "租税公課", amount: 180000 }], credit: [{ accountName: "現金", amount: 180000 }] },
+    choices: ["租税公課", "現金", "法人税等", "未払金"],
+    mutate: (q) => {
+      const fixed = Randomizer.getAmount(150000, 0.1, 1000);
+      const city = 30000;
+      const total = fixed + city;
+      q.text = `店舗兼倉庫の固定資産税 ${Randomizer.fmt(fixed)}円 と都市計画税 ${Randomizer.fmt(city)}円 の納付通知書を受け取り、現金で納付した。`;
+      q.correctEntries = { debit: [{ accountName: "租税公課", amount: total }], credit: [{ accountName: "現金", amount: total }] };
+      return q;
+    }
+  },
 
-  // --- 6. SETTLEMENT (決算整理) ---
+  // --- 6. SETTLEMENT I (決算整理 I) ---
   {
     id: 'n3_st_01', major: 'settlement', sub: 'bad_debts_closing',
     text: "決算につき、売掛金期末残高 2,000,000円 に対して 2% の貸倒引当金を設定する。なお、貸倒引当金の残高は 15,000円 である（差額補充法）。",
@@ -175,7 +163,42 @@ export const RAW_QUESTIONS = [
     }
   },
   {
-    id: 'n3_st_02', major: 'settlement', sub: 'accrual_deferral',
+    id: 'n3_st_06', major: 'settlement', sub: 'inventory_closing',
+    text: "決算整理を行う。期首商品棚卸高は 100,000円、期末商品棚卸高は 80,000円 であった。売上原価は「仕入」の行で計算する。",
+    correctEntries: { 
+      debit: [{ accountName: "仕入", amount: 100000 }, { accountName: "繰越商品", amount: 80000 }], 
+      credit: [{ accountName: "繰越商品", amount: 100000 }, { accountName: "仕入", amount: 80000 }] 
+    },
+    choices: ["仕入", "繰越商品", "売上原価", "棚卸減耗損"],
+    mutate: (q) => {
+      const opening = Randomizer.getAmount(100000, 0.1, 1000);
+      const closing = Randomizer.getAmount(80000, 0.1, 1000);
+      q.text = `決算整理を行う。期首商品棚卸高は ${Randomizer.fmt(opening)}円、期末商品棚卸高は ${Randomizer.fmt(closing)}円 であった。売上原価は「仕入」の行で計算する。`;
+      q.correctEntries = { 
+        debit: [{ accountName: "仕入", amount: opening }, { accountName: "繰越商品", amount: closing }], 
+        credit: [{ accountName: "繰越商品", amount: opening }, { accountName: "仕入", amount: closing }] 
+      };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_07', major: 'settlement', sub: 'depreciation_closing',
+    text: "建物の減価償却を行う。取得原価 6,000,000円、耐用年数 30年、残存価額ゼロ、定額法、記帳方法は間接法とする。",
+    correctEntries: { debit: [{ accountName: "減価償却費", amount: 200000 }], credit: [{ accountName: "減価償却累計額", amount: 200000 }] },
+    choices: ["減価償却費", "減価償却累計額", "建物", "損益"],
+    mutate: (q) => {
+      const cost = 6000000;
+      const years = 30;
+      const dep = cost / years;
+      q.text = `建物の減価償却を行う。取得原価 ${Randomizer.fmt(cost)}円、耐用年数 ${years}年、残存価額ゼロ、定額法、記帳方法は間接法とする。`;
+      q.correctEntries = { debit: [{ accountName: "減価償却費", amount: dep }], credit: [{ accountName: "減価償却累計額", amount: dep }] };
+      return q;
+    }
+  },
+
+  // --- 7. SETTLEMENT II (決算整理 II) ---
+  {
+    id: 'n3_st_02', major: 'settlement_adv', sub: 'accrual_deferral',
     text: "決算につき、支払保険料（１年分）のうち、翌期分 20,000円 を繰り延べる。",
     correctEntries: { debit: [{ accountName: "前払保険料", amount: 20000 }], credit: [{ accountName: "保険料", amount: 20000 }] },
     choices: ["前払保険料", "保険料", "未払金", "現金"],
@@ -187,7 +210,7 @@ export const RAW_QUESTIONS = [
     }
   },
   {
-    id: 'n3_st_03', major: 'settlement', sub: 'accrual_deferral',
+    id: 'n3_st_03', major: 'settlement_adv', sub: 'accrual_deferral',
     text: "借入金に対する利息の未払分 5,000円 を計上する。",
     correctEntries: { debit: [{ accountName: "支払利息", amount: 5000 }], credit: [{ accountName: "未払利息", amount: 5000 }] },
     choices: ["支払利息", "未払利息", "未払金", "現金"],
@@ -219,6 +242,30 @@ export const RAW_QUESTIONS = [
       const amt = Randomizer.getAmount(1000, 0.5, 100);
       q.text = `期中に現金過不足（借方）として処理していた ${Randomizer.fmt(amt)}円 について、決算になっても原因が判明しないため、雑損として処理する。`;
       q.correctEntries = { debit: [{ accountName: "雑損", amount: amt }], credit: [{ accountName: "現金過不足", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_08', major: 'settlement_adv', sub: 'accrual_deferral',
+    text: "所有するビルの一室を賃貸しており、今月分の家賃 50,000円 が未収となっているため、これを計上する。",
+    correctEntries: { debit: [{ accountName: "未収家賃", amount: 50000 }], credit: [{ accountName: "受取家賃", amount: 50000 }] },
+    choices: ["未収家賃", "受取家賃", "前受家賃", "現金"],
+    mutate: (q) => {
+      const amt = Randomizer.getAmount(50000, 0.1, 1000);
+      q.text = `所有するビルの一室を賃貸しており、今月分の家賃 ${Randomizer.fmt(amt)}円 が未収となっているため、これを計上する。`;
+      q.correctEntries = { debit: [{ accountName: "未収家賃", amount: amt }], credit: [{ accountName: "受取家賃", amount: amt }] };
+      return q;
+    }
+  },
+  {
+    id: 'n3_st_09', major: 'settlement_adv', sub: 'closing_entries',
+    text: "株主総会において、繰越利益剰余金を財源として、配当金 300,000円 を支払うことを決議した。",
+    correctEntries: { debit: [{ accountName: "繰越利益剰余金", amount: 300000 }], credit: [{ accountName: "未払配当金", amount: 300000 }] },
+    choices: ["繰越利益剰余金", "未払配当金", "利益準備金", "現金"],
+    mutate: (q) => {
+      const div = Randomizer.getAmount(300000, 0.1, 10000);
+      q.text = `株主総会において、繰越利益剰余金を財源として、配当金 ${Randomizer.fmt(div)}円 を支払うことを決議した。`;
+      q.correctEntries = { debit: [{ accountName: "繰越利益剰余金", amount: div }], credit: [{ accountName: "未払配当金", amount: div }] };
       return q;
     }
   }

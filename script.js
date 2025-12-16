@@ -2,8 +2,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { COLLECTION_ITEMS, GENRE_STRUCTURE } from './data.js';
-import { RAW_QUESTIONS } from './questions.js';
-import { EXPLANATIONS } from './explanations.js';
+
+// Import split question/explanation files
+import { RAW_QUESTIONS_OTHERS } from './questions.js';
+import { QUESTIONS_INTRO_CASH } from './questions_intro_cash.js';
+
+import { EXPLANATIONS_OTHERS } from './explanations.js';
+import { EXPLANATIONS_INTRO_CASH } from './explanations_intro_cash.js';
+
+// Combine them into single datasets
+const RAW_QUESTIONS = [
+  ...QUESTIONS_INTRO_CASH,
+  ...RAW_QUESTIONS_OTHERS
+];
+
+const EXPLANATIONS = {
+  ...EXPLANATIONS_INTRO_CASH,
+  ...EXPLANATIONS_OTHERS
+};
 
 // --- Utilities ---
 const generateId = () => 'id-' + Math.random().toString(36).substr(2, 9);
@@ -716,7 +732,7 @@ const App = () => {
     return (
       <div className="flex-grow flex flex-col items-center p-6 space-y-6 overflow-y-auto max-w-md mx-auto w-full">
         <div className="text-center space-y-2 mt-4">
-          <h1 className="text-2xl font-bold text-blue-800">全商簿記3級<br/>仕訳演習</h1>
+          <h1 className="text-2xl font-bold text-blue-800">日商簿記3級<br/>仕訳演習</h1>
           <p className="text-slate-500 text-xs font-medium">基礎から合格レベルまで完全網羅 (React 19)</p>
         </div>
         <div className="flex gap-4 w-full">

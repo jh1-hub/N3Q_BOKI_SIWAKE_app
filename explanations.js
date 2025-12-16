@@ -1,47 +1,10 @@
 
 /**
  * Nissho Bookkeeping Grade 3 Practice App
- * Explanation Definitions
- * React 19 Migration: ES Module Format
+ * Explanations: Other Genres
  */
 
-export const EXPLANATIONS = {
-  // --- Cash & Deposits ---
-  'n3_cash_01': { 
-    explanation: "決算時の現金不足は、原因不明なら「雑損」で処理します。",
-    steps: [
-      { comment: "まず、実際有高と帳簿残高の差額を計算します。\n83,500 - 82,000 = 1,500円 足りません。", highlight: "82,000円...83,500円", debit: false, credit: false },
-      { comment: "実際有高に合わせて帳簿の「現金」を減らします。", highlight: "適切に処理する", credit: true, creditKey: "現金" },
-      { comment: "決算日になっても原因が不明なので、費用として「雑損」を計上します。", highlight: "原因は不明", debit: true, debitKey: "雑損" }
-    ]
-  },
-  'n3_cash_02': { 
-    explanation: "「一勘定制」では、当座借越になっても「当座預金」勘定のマイナス（貸方）として処理します。",
-    steps: [
-      { comment: "買掛金を支払ったので「買掛金」を減らします（借方）。", highlight: "買掛金 150,000円 を支払うため", debit: true, debitKey: "買掛金" },
-      { comment: "当座預金口座から支払われますが、残高(5万)を超えても「一勘定制」なので、そのまま「当座預金」勘定を減らします。", highlight: "当座預金について「一勘定制」を採用している", credit: true, creditKey: "当座預金" },
-      { comment: "もし「二勘定制」なら、残高を超える分(10万)を「当座借越」とします。", highlight: "", debit: false, credit: false }
-    ]
-  },
-
-  // --- Merchandise ---
-  'n3_md_01': { 
-    explanation: "仕入諸掛（引取運賃）は、仕入原価に含めます。",
-    steps: [
-      { comment: "商品代金 300,000円 に引取運賃 5,000円 を加算して「仕入」とします。", highlight: "商品 300,000円...引取運賃 5,000円", debit: true, debitKey: "仕入" },
-      { comment: "現金で支払ったのは、商品代の一部(10万)と運賃(5千)の合計 105,000円 です。", highlight: "100,000円 は現金...引取運賃 5,000円 は現金", credit: true, creditKey: "現金" },
-      { comment: "残りの商品代金 200,000円 は掛けなので「買掛金」とします。", highlight: "残額は掛けとした", credit: true, creditKey: "買掛金" }
-    ]
-  },
-  'n3_md_02': { 
-    explanation: "クレジット売上は「クレジット売掛金」とし、手数料は「支払手数料」で処理します。",
-    steps: [
-      { comment: "売り上げたので「売上」を計上します。", highlight: "売上", credit: true, creditKey: "売上" },
-      { comment: "信販会社への手数料（60,000 × 2% = 1,200円）を費用計上します。", highlight: "手数料...販売時に計上する", debit: true, debitKey: "支払手数料" },
-      { comment: "売上代金から手数料を引いた残額を、後で受け取る権利「クレジット売掛金」とします。", highlight: "クレジット払いの条件", debit: true, debitKey: "クレジット売掛金" }
-    ]
-  },
-
+export const EXPLANATIONS_OTHERS = {
   // --- Notes & Electronic Claims ---
   'n3_nt_01': { 
     explanation: "電子記録債権の発生記録は、売掛金からの振替処理となります。",
@@ -57,6 +20,20 @@ export const EXPLANATIONS = {
       { comment: "手形の代わりに電子的な支払義務を負ったので、「電子記録債務」（負債）を計上します。", highlight: "電子記録債務の発生記録", credit: true, creditKey: "電子記録債務" }
     ]
   },
+  'n3_nt_03': { 
+    explanation: "売掛金の回収として手形を受け取った場合は「受取手形」が増加します。",
+    steps: [
+      { comment: "手形債権が発生したので「受取手形」（資産）を借方に計上します。", highlight: "約束手形を受け取った", debit: true, debitKey: "受取手形" },
+      { comment: "売掛金が回収されたので「売掛金」を貸方で減らします。", highlight: "売掛金...を回収するため", credit: true, creditKey: "売掛金" }
+    ]
+  },
+  'n3_nt_04': { 
+    explanation: "従業員にお金を貸した場合は「従業員貸付金」で処理します。",
+    steps: [
+      { comment: "従業員に対する債権なので、通常の「貸付金」と区別して「従業員貸付金」とします。", highlight: "従業員に対して...貸し付け", debit: true, debitKey: "従業員貸付金" },
+      { comment: "現金で貸し渡したので「現金」が減少します。", highlight: "現金を手渡した", credit: true, creditKey: "現金" }
+    ]
+  },
 
   // --- Fixed Assets ---
   'n3_fa_01': { 
@@ -66,6 +43,13 @@ export const EXPLANATIONS = {
       { comment: "間接法なので、積み立ててきた「減価償却累計額」を借方にして消滅させます。", highlight: "減価償却累計額 450,000円", debit: true, debitKey: "減価償却累計額" },
       { comment: "売却した「備品」を取得原価で貸方に記入して消滅させます。", highlight: "取得原価 500,000円", credit: true, creditKey: "備品" },
       { comment: "貸借差額を計算します。帳簿価額(5万)より安く(1万)売ったので、4万円の「固定資産売却損」です。", highlight: "10,000円 で売却", debit: true, debitKey: "固定資産売却損" }
+    ]
+  },
+  'n3_fa_02': { 
+    explanation: "固定資産の購入に伴う付随費用は、取得原価に含めます。",
+    steps: [
+      { comment: "車両本体価格に諸費用（付随費用）を足した金額を「車両運搬具」として計上します。\n2,000,000 + 100,000 = 2,100,000円", highlight: "購入に伴う諸費用", debit: true, debitKey: "車両運搬具" },
+      { comment: "全額を小切手で支払ったので「当座預金」を減らします。", highlight: "小切手を振り出した", credit: true, creditKey: "当座預金" }
     ]
   },
 
@@ -92,6 +76,13 @@ export const EXPLANATIONS = {
       { comment: "当期の税金費用として確定額を「法人税等」に計上します。", highlight: "180,000円 と確定した", debit: true, debitKey: "法人税等" },
       { comment: "中間納付していた「仮払法人税等」を貸方にして消します。", highlight: "中間申告分 80,000円", credit: true, creditKey: "仮払法人税等" },
       { comment: "差額（これから払う分）を「未払法人税等」とします。", highlight: "未払法人税等", credit: true, creditKey: "未払法人税等" }
+    ]
+  },
+  'n3_tx_04': { 
+    explanation: "固定資産税などの税金は「租税公課」勘定（費用）で処理します。",
+    steps: [
+      { comment: "固定資産税と都市計画税は、事業に必要な経費なので「租税公課」として計上します。", highlight: "固定資産税...都市計画税", debit: true, debitKey: "租税公課" },
+      { comment: "現金で納付したので、貸方は「現金」です。", highlight: "現金で納付", credit: true, creditKey: "現金" }
     ]
   },
 
@@ -130,6 +121,35 @@ export const EXPLANATIONS = {
     steps: [
       { comment: "期中の「現金過不足」（借方）を消すため、貸方に記入します。", highlight: "現金過不足（借方）...について", credit: true, creditKey: "現金過不足" },
       { comment: "原因不明の不足分なので、「雑損」（費用）として処理します。", highlight: "雑損として処理する", debit: true, debitKey: "雑損" }
+    ]
+  },
+  'n3_st_06': { 
+    explanation: "売上原価算定の仕訳（しーくり・くりし）です。",
+    steps: [
+      { comment: "【期首分】前期からの繰越商品を仕入（費用）に加えます（しー・くり）。\n借方：仕入 100,000 / 貸方：繰越商品 100,000", highlight: "期首商品棚卸高は 100,000円", debit: true, debitKey: "仕入" },
+      { comment: "【期末分】売れ残った商品を仕入から引いて、資産に戻します（くり・し）。\n借方：繰越商品 80,000 / 貸方：仕入 80,000", highlight: "期末商品棚卸高は 80,000円", credit: true, creditKey: "仕入" }
+    ]
+  },
+  'n3_st_07': { 
+    explanation: "定額法による減価償却費の計算：取得原価 ÷ 耐用年数",
+    steps: [
+      { comment: "計算：6,000,000円 ÷ 30年 = 200,000円（1年分）", highlight: "取得原価...耐用年数 30年", debit: false, credit: false },
+      { comment: "「減価償却費」（費用）を借方に計上します。", highlight: "建物の減価償却を行う", debit: true, debitKey: "減価償却費" },
+      { comment: "間接法なので、貸方は「減価償却累計額」を使用します。", highlight: "記帳方法は間接法", credit: true, creditKey: "減価償却累計額" }
+    ]
+  },
+  'n3_st_08': { 
+    explanation: "収益の見越し（未収収益の計上）です。",
+    steps: [
+      { comment: "当月分のサービス（部屋の貸出）は完了しているので、収益「受取家賃」を計上します。", highlight: "今月分の家賃 50,000円", credit: true, creditKey: "受取家賃" },
+      { comment: "まだお金をもらっていないので、後で受け取る権利「未収家賃」（または未収収益）を借方に計上します。", highlight: "未収となっている", debit: true, debitKey: "未収家賃" }
+    ]
+  },
+  'n3_st_09': { 
+    explanation: "配当決議時の仕訳です。まだ支払っていないため「未払配当金」となります。",
+    steps: [
+      { comment: "純資産である「繰越利益剰余金」を減らして配当の原資にします。", highlight: "繰越利益剰余金を財源", debit: true, debitKey: "繰越利益剰余金" },
+      { comment: "株主に支払う義務が生じたので、「未払配当金」（負債）を計上します。", highlight: "支払うことを決議した", credit: true, creditKey: "未払配当金" }
     ]
   }
 };
