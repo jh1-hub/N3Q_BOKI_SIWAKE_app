@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>日商簿記3級 仕訳演習</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css?v=3.1">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+      body {
+        font-family: 'Noto Sans JP', sans-serif;
+        overscroll-behavior-y: none;
+        background-color: #f3f4f6; /* bg-gray-100 */
+        color: #1e293b; /* text-slate-800 */
+      }
+    </style>
+    <!-- Import Map for React 19 -->
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.0.0-rc.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0-rc.0/client",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/"
+  }
+}
+</script>
+    <!-- Babel for in-browser JSX transformation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root" class="min-h-screen flex flex-col"></div>
+
+    <!-- Load Data Modules and App Logic -->
+    <!-- type="text/babel" triggers Babel transformation. data-type="module" allows ES imports -->
+    <script type="text/babel" data-type="module" src="script.js?v=3.1"></script>
+  </body>
+</html>
